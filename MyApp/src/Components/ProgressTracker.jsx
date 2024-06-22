@@ -24,7 +24,7 @@ const ProgressTracker = () => {
           backgroundGradientFrom: "#fb8c00",
           backgroundGradientTo: "#ffa726",
           decimalPlaces: 2,
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, 
           style: {
             borderRadius: 16,
           },
