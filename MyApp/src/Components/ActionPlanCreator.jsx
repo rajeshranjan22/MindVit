@@ -1,114 +1,137 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, ScrollView, SafeAreaView } from 'react-native';
+import { View, TextInput, Button, Text, ScrollView, SafeAreaView } from 'react-native';
+import styles from "./Style"
+import { Checkbox, ProgressBar } from 'react-native-paper';
 
 const ActionPlanCreator = () => {
-    const [goal, setGoal] = useState('');
-    const [steps, setSteps] = useState('');
-    const [deadline, setDeadline] = useState('');
-    const [obstacles, setObstacles] = useState('');
-    const [submittedPlans, setSubmittedPlans] = useState([]);
+  const [goal, setGoal] = useState('');
+  const [steps, setSteps] = useState('');
+  const [deadline, setDeadline] = useState('');
+  const [obstacles, setObstacles] = useState('');
+  const [submittedPlans, setSubmittedPlans] = useState([]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const handleSubmission = () => {
-        const newPlan = { goal, steps, deadline, obstacles };
-        setSubmittedPlans([...submittedPlans, newPlan]);
-        setGoal('');
-        setSteps('');
-        setDeadline('');
-        setObstacles('');
+  const handleSubmission = () => {
+    const newPlan = {
+      goal: { text: goal, checked: false },
+      steps: { text: steps, checked: false },
+      deadline: { text: deadline, checked: false },
+      obstacles: { text: obstacles, checked: false },
     };
+    setSubmittedPlans([...submittedPlans, newPlan]);
+    setGoal('');
+    setSteps('');
+    setDeadline('');
+    setObstacles('');
+    setIsSubmitted(true);
+  };
 
-    return (
-        <SafeAreaView style={styles.safeArea}>
-            <ScrollView contentContainerStyle={styles.container}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your goal"
-                    value={goal}
-                    onChangeText={setGoal}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Break down steps"
-                    value={steps}
-                    onChangeText={setSteps}
-                    multiline
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Set deadline"
-                    value={deadline}
-                    onChangeText={setDeadline}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Identify obstacles"
-                    value={obstacles}
-                    onChangeText={setObstacles}
-                    multiline
-                />
-                <Button title="Review and Submit" onPress={handleSubmission} />
+  const toggleCheckbox = (planIndex, field) => {
+    const updatedPlans = submittedPlans.map((plan, index) => {
+      if (index === planIndex) {
+        return {
+          ...plan,
+          [field]: {
+            ...plan[field],
+            checked: !plan[field].checked,
+          },
+        };
+      }
+      return plan;
+    });
+    setSubmittedPlans(updatedPlans);
+  };
 
-                {submittedPlans.length > 0 && (
-                    <View style={styles.resultsContainer}>
-                        <Text style={styles.resultTitle}>Review Your Plans:</Text>
-                        {submittedPlans.map((plan, index) => (
-                            <View key={index} style={styles.resultItem}>
-                                <Text style={styles.resultText}>
-                                    <Text style={styles.resultLabel}>Goal: </Text>{plan.goal}
-                                </Text>
-                                <Text style={styles.resultText}>
-                                    <Text style={styles.resultLabel}>Steps: </Text>{plan.steps}
-                                </Text>
-                                <Text style={styles.resultText}>
-                                    <Text style={styles.resultLabel}>Deadline: </Text>{plan.deadline}
-                                </Text>
-                                <Text style={styles.resultText}>
-                                    <Text style={styles.resultLabel}>Obstacles: </Text>{plan.obstacles}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                )}
-            </ScrollView>
-        </SafeAreaView>
-    );
+  const calculateProgress = (plan) => {
+    const totalChecks =
+      (plan.goal.checked ? 1 : 0) +
+      (plan.steps.checked ? 1 : 0) +
+      (plan.deadline.checked ? 1 : 0) +
+      (plan.obstacles.checked ? 1 : 0);
+
+    return totalChecks / 4;
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your goal"
+          value={goal}
+          onChangeText={setGoal}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Break down steps"
+          value={steps}
+          onChangeText={setSteps}
+          multiline
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Set deadline"
+          value={deadline}
+          onChangeText={setDeadline}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Identify obstacles"
+          value={obstacles}
+          onChangeText={setObstacles}
+          multiline
+        />
+        <Button title="Review and Submit" onPress={handleSubmission} />
+
+        {isSubmitted && submittedPlans.length > 0 && (
+          <View style={styles.resultsContainer}>
+            <Text style={styles.resultTitle}>Review Your Plans:</Text>
+            {submittedPlans.map((plan, planIndex) => (
+              <View key={planIndex} style={styles.resultItem}>
+                <View style={styles.resultField}>
+                  <Checkbox
+                    status={plan.goal.checked ? 'checked' : 'unchecked'}
+                    onPress={() => toggleCheckbox(planIndex, 'goal')}
+                  />
+                  <Text style={styles.resultText}>
+                    <Text style={styles.resultLabel}>Goal: </Text>{plan.goal.text}
+                  </Text>
+                </View>
+                <View style={styles.resultField}>
+                  <Checkbox
+                    status={plan.steps.checked ? 'checked' : 'unchecked'}
+                    onPress={() => toggleCheckbox(planIndex, 'steps')}
+                  />
+                  <Text style={styles.resultText}>
+                    <Text style={styles.resultLabel}>Steps: </Text>{plan.steps.text}
+                  </Text>
+                </View>
+                <View style={styles.resultField}>
+                  <Checkbox
+                    status={plan.deadline.checked ? 'checked' : 'unchecked'}
+                    onPress={() => toggleCheckbox(planIndex, 'deadline')}
+                  />
+                  <Text style={styles.resultText}>
+                    <Text style={styles.resultLabel}>Deadline: </Text>{plan.deadline.text}
+                  </Text>
+                </View>
+                <View style={styles.resultField}>
+                  <Checkbox
+                    status={plan.obstacles.checked ? 'checked' : 'unchecked'}
+                    onPress={() => toggleCheckbox(planIndex, 'obstacles')}
+                  />
+                  <Text style={styles.resultText}>
+                    <Text style={styles.resultLabel}>Obstacles: </Text>{plan.obstacles.text}
+                  </Text>
+                </View>
+                <ProgressBar progress={calculateProgress(plan)} color="#0163d2" style={styles.progressBar} />
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
 };
-
-const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: '#fff',
-        padding:30
-    },
-    container: {
-        flexGrow: 1,
-        padding: 20,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 10,
-        borderRadius: 5,
-    },
-    resultsContainer: {
-        marginTop: 20,
-    },
-    resultTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    resultItem: {
-        marginBottom: 15,
-    },
-    resultText: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    resultLabel: {
-        fontWeight: 'bold',
-    },
-});
 
 export default ActionPlanCreator;
