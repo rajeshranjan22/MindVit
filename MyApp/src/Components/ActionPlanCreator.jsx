@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, ScrollView, SafeAreaView } from 'react-native';
-import styles from "./Style"
+import styles from './Style';
 import { Checkbox, ProgressBar } from 'react-native-paper';
+import ProgressTracker from './ProgressTracker'; // Import the ProgressTracker component
 
 const ActionPlanCreator = () => {
   const [goal, setGoal] = useState('');
@@ -94,7 +95,8 @@ const ActionPlanCreator = () => {
                     onPress={() => toggleCheckbox(planIndex, 'goal')}
                   />
                   <Text style={styles.resultText}>
-                    <Text style={styles.resultLabel}>Goal: </Text>{plan.goal.text}
+                    <Text style={styles.resultLabel}>Goal: </Text>
+                    {plan.goal.text}
                   </Text>
                 </View>
                 <View style={styles.resultField}>
@@ -103,7 +105,8 @@ const ActionPlanCreator = () => {
                     onPress={() => toggleCheckbox(planIndex, 'steps')}
                   />
                   <Text style={styles.resultText}>
-                    <Text style={styles.resultLabel}>Steps: </Text>{plan.steps.text}
+                    <Text style={styles.resultLabel}>Steps: </Text>
+                    {plan.steps.text}
                   </Text>
                 </View>
                 <View style={styles.resultField}>
@@ -112,7 +115,8 @@ const ActionPlanCreator = () => {
                     onPress={() => toggleCheckbox(planIndex, 'deadline')}
                   />
                   <Text style={styles.resultText}>
-                    <Text style={styles.resultLabel}>Deadline: </Text>{plan.deadline.text}
+                    <Text style={styles.resultLabel}>Deadline: </Text>
+                    {plan.deadline.text}
                   </Text>
                 </View>
                 <View style={styles.resultField}>
@@ -121,7 +125,8 @@ const ActionPlanCreator = () => {
                     onPress={() => toggleCheckbox(planIndex, 'obstacles')}
                   />
                   <Text style={styles.resultText}>
-                    <Text style={styles.resultLabel}>Obstacles: </Text>{plan.obstacles.text}
+                    <Text style={styles.resultLabel}>Obstacles: </Text>
+                    {plan.obstacles.text}
                   </Text>
                 </View>
                 <ProgressBar progress={calculateProgress(plan)} color="#0163d2" style={styles.progressBar} />
@@ -134,4 +139,4 @@ const ActionPlanCreator = () => {
   );
 };
 
-export default ActionPlanCreator
+export default ActionPlanCreator;
